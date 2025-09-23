@@ -1,0 +1,63 @@
+const mongoose = require("mongoose");
+
+// salesAgent Schema
+const salesAgentSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    phone: {
+        type: String
+    },
+    role: {
+        type: String,
+        enum: ["SalesAgent", "Lead"], default: "SalesAgent"
+    }
+},
+{timestamps: true});
+
+const SalesAgent = mongoose.model("SalesAgent", salesAgentSchema);
+
+// Lead Schema
+
+const leadSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    source: {
+        type: String,
+        required: true
+    },
+    salesAgent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SalesAgent",
+        required: true
+    },
+
+    status: {
+        type: String,
+        enum: ["New", "Contracted", "Qualified"],
+        default: "New",
+        required: true
+    },
+    tags: [{type: String}],
+    timeToClose: {
+        type: Number
+    },
+    priority: {
+        type: String,
+        enum: ["High", "Medium", "Low"],
+        default: "Medium",
+        required: true
+    }
+}, {timestamps: true});
+
+const Lead = mongoose.model("Lead", leadSchema);
+
+module.exports = {SalesAgent, Lead};
