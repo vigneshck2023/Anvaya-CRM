@@ -16,7 +16,6 @@ const salesAgentSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["SalesAgent", "Lead"], default: "SalesAgent"
     }
 },
 {timestamps: true});
