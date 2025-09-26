@@ -84,6 +84,23 @@ app.get("/leads", async (req,res) => {
 })
 
 
+// get single lead by id
+app.get("/leads/:id", async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.params.id).populate("salesAgent", "id name");
+
+    if (!lead) {
+      return res.status(404).json({ message: `Lead with ID '${req.params.id}' not found` });
+    }
+
+    res.status(200).json({ data: lead });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 app.put("/api/lead/:id", async (req, res) => {
   try {
     const lead = await Lead.findByIdAndUpdate(
