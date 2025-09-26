@@ -55,7 +55,14 @@ const leadSchema = new mongoose.Schema({
         enum: ["High", "Medium", "Low"],
         default: "Medium",
         required: true
+    },
+    comments: [
+    {
+      author: String,
+      text: String,
+      date: { type: Date, default: Date.now }
     }
+  ]
 }, {timestamps: true});
 
 const Lead = mongoose.model("Lead", leadSchema);

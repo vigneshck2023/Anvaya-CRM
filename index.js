@@ -119,6 +119,25 @@ app.put("/api/lead/:id", async (req, res) => {
   }
 });
 
+// Add comment to a lead
+app.post("/leads/:id/comments", async (req, res) => {
+  try {
+    const { author, text } = req.body;
+    if (!text) return res.status(400).json({ message: "Comment text required" });
+
+    const lead = await Lead.findById(req.params.id);
+    if (!lead) return res.status(404).json({ message: "Lead not found" });
+
+    lead.comments.unshift({ author, text, date: new Date() }); // newest on top
+    await lead.save();
+
+    res.status(201).json({ data: lead.comments });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Running of port ${PORT}`);
