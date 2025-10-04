@@ -42,21 +42,28 @@ app.get("/api/agent", async(req,res) => {
 app.post("/leads", async (req,res) => {
     try{
         const { name, source, salesAgent, status, timeToClose, priority } = req.body;
+
         if(!name || typeof name!== "string"){
             return res.status(400).json({message: `Invalid input: 'name' input is required.`});
         }
+
         if(!source || !sources.includes(source)){
             return res.status(400).json({message: `Invalid Input: 'source' input required`});
         }
-        if(!salesAgent || !mongoose.Types.ObjectId.isValid(salesAgent)){
-            return res.status(400).json({message: `Invalid Input: Invalid ID`});
+
+        // Validate multiple sales agents
+        if (!salesAgent || !Array.isArray(salesAgent) || !salesAgent.every(id => mongoose.Types.ObjectId.isValid(id))) {
+            return res.status(400).json({ message: `Invalid Input: Invalid ID` });
         }
+
         if(!status || !statuses.includes(status)){
             return res.status(400).json({message: `Invalid Input: 'status' input required`})
         }
+
         if(timeToClose !== undefined && (!Number.isInteger(timeToClose) || timeToClose <= 0)){
             return res.status(400).json({message: `Invalid Input: Enter a valid Input`});
         }
+
         if(!priority || !priorities.includes(priority)){
              return res.status(400).json({message: `Invalid Input: 'priority' input required`});
         }
@@ -71,6 +78,7 @@ app.post("/leads", async (req,res) => {
         res.status(500).json({message: error.message});
     }
 });
+
 
 // list all leads
 app.get("/leads", async (req,res) => {
