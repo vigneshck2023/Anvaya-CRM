@@ -54,11 +54,12 @@ const leadSchema = new mongoose.Schema(
       type: Number
     },
     priority: {
-      type: String,
-      enum: ["High", "Medium", "Low"],
-      default: "Medium",
-      required: true
-    },
+  type: [String],
+  enum: ["High", "Medium", "Low"],
+  default: ["Medium"],
+  required: true
+}
+,
     comments: [
       {
         author: String,
