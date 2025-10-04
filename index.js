@@ -64,9 +64,17 @@ app.post("/leads", async (req,res) => {
             return res.status(400).json({message: `Invalid Input: Enter a valid Input`});
         }
 
-        if(!priority || !priorities.includes(priority)){
-             return res.status(400).json({message: `Invalid Input: 'priority' input required`});
-        }
+        // priorities should be an array of strings
+if (!priority || !Array.isArray(priority) || priority.length === 0) {
+    return res.status(400).json({message: `Invalid Input: 'priority' input required`});
+}
+
+// validate each value
+const invalidPriority = priority.some(p => !priorities.includes(p));
+if (invalidPriority) {
+    return res.status(400).json({message: `Invalid Input: 'priority' contains invalid value`});
+}
+
 
         const lead = new Lead(req.body);
         const savedLead = await lead.save();
