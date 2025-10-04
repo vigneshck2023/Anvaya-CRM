@@ -119,6 +119,23 @@ app.put("/api/lead/:id", async (req, res) => {
   }
 });
 
+
+// get single agent with leads
+app.get("/api/agents/:id", async (req, res) => {
+  try {
+    const agent = await SalesAgent.findById(req.params.id);
+    if (!agent) return res.status(404).json({ message: "Agent not found" });
+
+    // populate leads by this agent
+    const leads = await Lead.find({ salesAgent: agent._id });
+
+    res.status(200).json({ data: { ...agent.toObject(), leads } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 // Add comment to a lead
 app.post("/leads/:id/comments", async (req, res) => {
   try {
