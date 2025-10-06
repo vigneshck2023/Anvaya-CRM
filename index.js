@@ -171,7 +171,6 @@ app.post("/leads/:id/comments", async (req, res) => {
 });
 
 // Delete Sales Agent
-// Delete Sales Agent
 app.delete("/api/agents/:id", async (req, res) => {
   try {
     const agent = await SalesAgent.findByIdAndDelete(req.params.id);
