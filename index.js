@@ -179,7 +179,7 @@ app.delete("/api/agents/:id", async (req, res) => {
 
     // Remove this agent from all leads where salesAgent is an array
     await Lead.updateMany(
-      { salesAgent: { $in: [agent._id] } }, // only leads where salesAgent contains this agent
+      { salesAgent: { $in: [agent._id] } },
       { $pull: { salesAgent: agent._id } }
     );
 
