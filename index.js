@@ -170,6 +170,34 @@ app.post("/leads/:id/comments", async (req, res) => {
   }
 });
 
+// Delete Sales Agent
+app.delete("/api/agents/:id", async (req, res) => {
+  try {
+    const agent = await SalesAgent.findByIdAndDelete(req.params.id);
+    if (!agent) return res.status(404).json({ message: "Agent not found" });
+
+    // Optional: remove this agent from all leads
+    await Lead.updateMany(
+      { salesAgent: agent._id },
+      { $pull: { salesAgent: agent._id } }
+    );
+
+    res.status(200).json({ message: "Agent deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Delete Lead
+app.delete("/leads/:id", async (req, res) => {
+  try {
+    const lead = await Lead.findByIdAndDelete(req.params.id);
+    if (!lead) return res.status(404).json({ message: "Lead not found" });
+    res.status(200).json({ message: "Lead deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
