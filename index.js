@@ -171,14 +171,15 @@ app.post("/leads/:id/comments", async (req, res) => {
 });
 
 // Delete Sales Agent
+// Delete Sales Agent
 app.delete("/api/agents/:id", async (req, res) => {
   try {
     const agent = await SalesAgent.findByIdAndDelete(req.params.id);
     if (!agent) return res.status(404).json({ message: "Agent not found" });
 
-    // Optional: remove this agent from all leads
+    // Remove this agent from all leads where salesAgent is an array
     await Lead.updateMany(
-      { salesAgent: agent._id },
+      { salesAgent: { $in: [agent._id] } }, // only leads where salesAgent contains this agent
       { $pull: { salesAgent: agent._id } }
     );
 
@@ -187,6 +188,7 @@ app.delete("/api/agents/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 // Delete Lead
 app.delete("/leads/:id", async (req, res) => {
